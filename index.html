@@ -3,147 +3,289 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tamagotchi</title>
+<title>My Tamagotchi</title>
 
 <style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-    background:#87ceeb;
-    font-family:monospace;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
-    margin:0;
+    overflow:hidden;
+    font-family:'Trebuchet MS',sans-serif;
+    background:linear-gradient(135deg,#89f7fe,#66a6ff);
 }
 
-#game{
-    width:400px;
-    background:#fff;
-    border:6px solid #222;
-    border-radius:20px;
+/* Floating bubbles */
+
+body::before,
+body::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    background:rgba(255,255,255,0.2);
+    animation:float 12s infinite linear;
+}
+
+body::before{
+    width:250px;
+    height:250px;
+    left:-100px;
+    top:10%;
+}
+
+body::after{
+    width:180px;
+    height:180px;
+    right:-50px;
+    bottom:10%;
+    animation-duration:15s;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(0);
+    }
+    to{
+        transform:translateY(-40px);
+    }
+}
+
+/* Device */
+
+.tamagotchi{
+    width:420px;
+    background:linear-gradient(180deg,#ffd6f5,#ffb6e6);
+    border-radius:40px;
+    padding:25px;
+    box-shadow:
+        0 25px 50px rgba(0,0,0,0.25),
+        inset 0 4px 10px rgba(255,255,255,0.8);
+    border:6px solid rgba(255,255,255,0.7);
+}
+
+.title{
+    text-align:center;
+    color:#7a1d58;
+    font-size:32px;
+    font-weight:bold;
+    margin-bottom:20px;
+}
+
+/* Screen */
+
+.screen{
+    background:linear-gradient(180deg,#dfffe0,#bdf8c1);
+    border-radius:25px;
     padding:20px;
-    box-shadow:8px 8px 0 #222;
+    border:5px solid #3d5b3f;
+    box-shadow:inset 0 0 20px rgba(0,0,0,0.15);
 }
 
-h1{
+.pet-area{
     text-align:center;
-    margin-top:0;
 }
 
-#petDisplay{
-    text-align:center;
-    font-size:90px;
-    margin:10px 0;
-    height:120px;
+.pet{
+    font-size:100px;
+    animation:bounce 2s infinite ease-in-out;
+    user-select:none;
 }
+
+@keyframes bounce{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+}
+
+.message{
+    text-align:center;
+    margin-top:10px;
+    font-weight:bold;
+    color:#355b36;
+    min-height:24px;
+}
+
+/* Stats */
 
 .stats{
-    margin:15px 0;
+    margin-top:20px;
 }
 
 .stat{
-    margin:8px 0;
+    margin-bottom:14px;
+}
+
+.label{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    margin-bottom:4px;
 }
 
 .bar{
-    width:100%;
-    height:20px;
-    background:#ddd;
-    border:2px solid #222;
+    height:16px;
+    background:#ffffff80;
+    border-radius:30px;
+    overflow:hidden;
 }
 
 .fill{
     height:100%;
-    background:#4caf50;
-    width:100%;
+    border-radius:30px;
+    transition:.4s;
 }
 
-#message{
-    text-align:center;
-    font-weight:bold;
-    min-height:24px;
-    margin:10px 0;
+.hungerFill{
+    background:linear-gradient(90deg,#ff9800,#ffd54f);
 }
 
-.buttons{
+.happyFill{
+    background:linear-gradient(90deg,#ff4fc3,#ff99dd);
+}
+
+.energyFill{
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+}
+
+.healthFill{
+    background:linear-gradient(90deg,#22c55e,#86efac);
+}
+
+/* Buttons */
+
+.controls{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:10px;
+    gap:12px;
+    margin-top:20px;
 }
 
 button{
-    padding:12px;
+    border:none;
+    border-radius:16px;
+    padding:14px;
     font-size:16px;
     cursor:pointer;
-    border:3px solid #222;
-    background:#f5f5f5;
-    font-family:monospace;
+    font-weight:bold;
+    color:white;
+    transition:.25s;
 }
 
 button:hover{
-    background:#e0e0e0;
+    transform:translateY(-3px);
 }
 
-#age{
+.feed{
+    background:#ff9800;
+}
+
+.play{
+    background:#ff4fc3;
+}
+
+.sleep{
+    background:#3b82f6;
+}
+
+.med{
+    background:#22c55e;
+}
+
+.footer{
     text-align:center;
-    margin-top:10px;
+    margin-top:18px;
+    color:#7a1d58;
     font-weight:bold;
 }
 
 .dead{
-    color:red;
+    filter:grayscale(1);
 }
 </style>
 </head>
 <body>
 
-<div id="game">
-    <h1>TAMAGOTCHI</h1>
+<div class="tamagotchi">
 
-    <div id="petDisplay">🐣</div>
+    <div class="title">✨ My Tamagotchi ✨</div>
 
-    <div id="message">Your pet is happy!</div>
+    <div class="screen">
 
-    <div class="stats">
-
-        <div class="stat">
-            Hunger
-            <div class="bar">
-                <div class="fill" id="hungerBar"></div>
-            </div>
+        <div class="pet-area">
+            <div id="pet" class="pet">🐣</div>
         </div>
 
-        <div class="stat">
-            Happiness
-            <div class="bar">
-                <div class="fill" id="happyBar"></div>
-            </div>
+        <div id="message" class="message">
+            Your pet is feeling wonderful!
         </div>
 
-        <div class="stat">
-            Energy
-            <div class="bar">
-                <div class="fill" id="energyBar"></div>
-            </div>
-        </div>
+        <div class="stats">
 
-        <div class="stat">
-            Health
-            <div class="bar">
-                <div class="fill" id="healthBar"></div>
+            <div class="stat">
+                <div class="label">
+                    <span>🍎 Hunger</span>
+                    <span id="hungerValue">100</span>
+                </div>
+                <div class="bar">
+                    <div id="hungerBar" class="fill hungerFill"></div>
+                </div>
             </div>
+
+            <div class="stat">
+                <div class="label">
+                    <span>🎈 Happiness</span>
+                    <span id="happyValue">100</span>
+                </div>
+                <div class="bar">
+                    <div id="happyBar" class="fill happyFill"></div>
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="label">
+                    <span>⚡ Energy</span>
+                    <span id="energyValue">100</span>
+                </div>
+                <div class="bar">
+                    <div id="energyBar" class="fill energyFill"></div>
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="label">
+                    <span>❤️ Health</span>
+                    <span id="healthValue">100</span>
+                </div>
+                <div class="bar">
+                    <div id="healthBar" class="fill healthFill"></div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
-    <div class="buttons">
-        <button onclick="feed()">🍎 Feed</button>
-        <button onclick="play()">⚽ Play</button>
-        <button onclick="sleepPet()">😴 Sleep</button>
-        <button onclick="medicine()">💊 Medicine</button>
+    <div class="controls">
+        <button class="feed" onclick="feed()">🍎 Feed</button>
+        <button class="play" onclick="play()">⚽ Play</button>
+        <button class="sleep" onclick="sleepPet()">😴 Sleep</button>
+        <button class="med" onclick="medicine()">💊 Medicine</button>
     </div>
 
-    <div id="age">Age: 0 days</div>
+    <div class="footer">
+        Age: <span id="age">0</span> days
+    </div>
+
 </div>
 
 <script>
@@ -156,62 +298,78 @@ const pet = {
     alive:true
 };
 
-function clamp(value){
-    return Math.max(0, Math.min(100, value));
+function clamp(v){
+    return Math.max(0,Math.min(100,v));
 }
 
-function updateBars(){
-    document.getElementById("hungerBar").style.width = pet.hunger + "%";
-    document.getElementById("happyBar").style.width = pet.happiness + "%";
-    document.getElementById("energyBar").style.width = pet.energy + "%";
-    document.getElementById("healthBar").style.width = pet.health + "%";
+function updatePet(){
+    document.getElementById("hungerBar").style.width =
+        pet.hunger + "%";
+
+    document.getElementById("happyBar").style.width =
+        pet.happiness + "%";
+
+    document.getElementById("energyBar").style.width =
+        pet.energy + "%";
+
+    document.getElementById("healthBar").style.width =
+        pet.health + "%";
+
+    document.getElementById("hungerValue").textContent =
+        pet.hunger;
+
+    document.getElementById("happyValue").textContent =
+        pet.happiness;
+
+    document.getElementById("energyValue").textContent =
+        pet.energy;
+
+    document.getElementById("healthValue").textContent =
+        pet.health;
 
     document.getElementById("age").textContent =
-        "Age: " + pet.age + " days";
+        pet.age;
 
-    updatePetAppearance();
-}
-
-function updatePetAppearance(){
-    const petDisplay = document.getElementById("petDisplay");
+    const petIcon = document.getElementById("pet");
 
     if(!pet.alive){
-        petDisplay.textContent = "💀";
+        petIcon.textContent = "💀";
+        petIcon.classList.add("dead");
         return;
     }
 
-    if(pet.health < 30){
-        petDisplay.textContent = "🤒";
+    if(pet.health < 25){
+        petIcon.textContent = "🤒";
     }
-    else if(pet.energy < 30){
-        petDisplay.textContent = "😴";
+    else if(pet.energy < 25){
+        petIcon.textContent = "😴";
     }
-    else if(pet.happiness < 30){
-        petDisplay.textContent = "😢";
+    else if(pet.happiness < 25){
+        petIcon.textContent = "😢";
     }
     else if(pet.age < 5){
-        petDisplay.textContent = "🐣";
+        petIcon.textContent = "🐣";
     }
     else if(pet.age < 15){
-        petDisplay.textContent = "🐤";
+        petIcon.textContent = "🐤";
     }
     else{
-        petDisplay.textContent = "🐥";
+        petIcon.textContent = "🐥";
     }
 }
 
-function setMessage(msg){
-    document.getElementById("message").textContent = msg;
+function say(text){
+    document.getElementById("message").textContent = text;
 }
 
 function feed(){
     if(!pet.alive) return;
 
-    pet.hunger = clamp(pet.hunger + 25);
+    pet.hunger = clamp(pet.hunger + 20);
     pet.health = clamp(pet.health + 5);
 
-    setMessage("Yum! That was tasty.");
-    updateBars();
+    say("That meal was delicious!");
+    updatePet();
 }
 
 function play(){
@@ -220,17 +378,17 @@ function play(){
     pet.happiness = clamp(pet.happiness + 20);
     pet.energy = clamp(pet.energy - 10);
 
-    setMessage("Your pet had fun!");
-    updateBars();
+    say("What a fun game!");
+    updatePet();
 }
 
 function sleepPet(){
     if(!pet.alive) return;
 
-    pet.energy = clamp(pet.energy + 35);
+    pet.energy = clamp(pet.energy + 30);
 
-    setMessage("Your pet feels rested.");
-    updateBars();
+    say("Feeling refreshed!");
+    updatePet();
 }
 
 function medicine(){
@@ -238,47 +396,48 @@ function medicine(){
 
     pet.health = clamp(pet.health + 25);
 
-    setMessage("Medicine helped.");
-    updateBars();
+    say("The medicine helped!");
+    updatePet();
 }
 
 function gameTick(){
+
     if(!pet.alive) return;
 
     pet.hunger = clamp(pet.hunger - 4);
     pet.happiness = clamp(pet.happiness - 3);
     pet.energy = clamp(pet.energy - 2);
 
-    if(pet.hunger < 20) pet.health -= 4;
-    if(pet.happiness < 20) pet.health -= 2;
-    if(pet.energy < 20) pet.health -= 3;
+    if(pet.hunger < 20)
+        pet.health -= 4;
+
+    if(pet.happiness < 20)
+        pet.health -= 2;
+
+    if(pet.energy < 20)
+        pet.health -= 3;
 
     pet.health = clamp(pet.health);
 
     if(pet.health <= 0){
         pet.alive = false;
-
-        document.getElementById("message").innerHTML =
-            "<span class='dead'>Your pet has passed away.</span>";
-
-        updateBars();
-        return;
+        say("Your pet has passed away...");
     }
 
-    updateBars();
+    updatePet();
 }
 
 function ageTick(){
     if(!pet.alive) return;
 
     pet.age++;
-    updateBars();
+    updatePet();
 }
 
-updateBars();
+updatePet();
 
-setInterval(gameTick, 5000);
-setInterval(ageTick, 30000);
+setInterval(gameTick,5000);
+setInterval(ageTick,30000);
 </script>
 
 </body>
